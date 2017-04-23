@@ -1,0 +1,23 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "ejs": "^2.5.6",
+    "express": "^4.15.2",
+    "htmlparser": "^1.7.7",
+    "open": "0.0.5",
+    "openurl": "^1.1.1",
+    "phantom": "^4.0.2",
+    "phantomjs": "^2.1.7",
+    "request": "^2.81.0",
+    "webpage": "^0.3.0"
+  }
+}
