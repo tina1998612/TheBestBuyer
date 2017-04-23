@@ -8,6 +8,6 @@ This is a hackathon(hackUST) project (http://hack.ust.hk/hack2017/)
 ## Demo2: Get real time data scraped from parknshop website 
 ![alt text](./demo/get_real_time_data_from_parknshop.gif "Demo2") <br><br>
 
-## Demo3: Show groups
+## Demo3: Using google map to calculate the distance between shops and generate the rankings according to the user's preference
 ![alt text](./demo/google_map_demo.gif "Demo3")<br><br><br>
 
