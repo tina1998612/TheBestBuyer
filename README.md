@@ -12,5 +12,5 @@ This is a hackathon(hackUST) project (http://hack.ust.hk/hack2017/)
 ![alt text](./demo/gif/google_map_demo.gif "Demo3")
 ### Using google map api to calculate the distance between shops and generate the rankings according to the user's preference on the product price and the time required to buy it (traveling time). <br><br>
 
-## Screeshot of your json output
+## Screeshot of our json output
 ![alt text](./demo/img/json_output.png "Demo4")
