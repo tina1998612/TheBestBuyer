@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Place searches</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+    <script>
+      // This example requires the Places library. Include the libraries=places
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=APIKEYHERE&libraries=places">
+
+      var map;
+      var infowindow;
+      function getLocation() {
+              navigator.geolocation.getCurrentPosition(initMap);
+          
+      }
+      var centerr;
+      function initMap(position) {
+        var pyrmont = {lat: position.coords.latitude, lng: position.coords.longitude};
+        centerr = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: pyrmont,
+          zoom: 15
+        });
+
+        infowindow = new google.maps.InfoWindow();
+        var service = new google.maps.places.PlacesService(map);
+        service.nearbySearch({
+          location: pyrmont,
+          radius: 3000,
+          openNow: false,
+          keyword: ['parknshop']
+
+        }, callback);
+          service.nearbySearch({
+          location: pyrmont,
+          radius: 3000,
+          openNow: false,
+          keyword: ['jasons']
+
+        }, callback);
+
+      }
+
+
+      var places = 0;
+      var newplaces = 0;
+      var distances = [];
+      var distancesW = []
+      var ranking = [];
+      var ranking2 = [];
+      var flag = 0
+      var min_dist, max_dist;
+      var parknshop_best;
+      var wellcome_best;
+      var ovallmin, ovallmax;
+      var Wrank, Prank;
+     // var json_data = [];
+
+      function callback(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            createMarker(results[i]);
+
+          }
+          if(flag == 0)
+          {
+              min_dist = distances[0];
+              max_dist = distances[0];
+              ovallmin = distances[0];
+              ovallmax = distances[0];
+              for(var j = 0; j < places; j++)
+              {
+               // json_data[j] = {dis: distances[j]};
+                //alert(distances[j]);
+                if(distances[j]< min_dist)
+                {
+                  min_dist = distances[j];
+
+                }
+                if(distances[j]> max_dist)
+                {
+                  max_dist = distances[j];
+                }
+
+                if(distances[j]< ovallmin)
+                {
+                  ovallmin = distances[j];
+                }
+                
+                if(distances[j]> ovallmax)
+                {
+                  ovallmax = distances[j];
+                }
+                
+              }
+              parknshop_best = min_dist;
+              for(var j = 0; j < places; j ++)
+              {
+                ranking[j]= 1-(distances[j]-min_dist)/(max_dist-min_dist);
+                //alert("Parknshop"+ranking[j]);
+              } 
+              alert("Parknshop best distance: " + parknshop_best);
+              flag = 1;
+              newplaces = places;
+              places = 0;
+          }
+          else
+          {
+              min_dist = distancesW[0];
+              max_dist = distancesW[0];
+              for(var j = 0; j < places; j++)
+              {
+               // json_data[j] = {dis: distances[j]};
+                //alert(distances[j]);
+                if(distancesW[j]< min_dist)
+                {
+                  min_dist = distancesW[j];
+                }
+                if(distancesW[j]> max_dist)
+                {
+                  max_dist = distancesW[j];
+                }
+
+                 if(distancesW[j]< ovallmin)
+                {
+                  ovallmin = distancesW[j];
+                }
+                
+                if(distancesW[j]> ovallmax)
+                {
+                  ovallmax = distancesW[j];
+                }
+
+              }
+              wellcome_best = min_dist;
+              for(var j = 0; j < places; j ++)
+              {
+                ranking2[j]= 1-(distancesW[j]-min_dist)/(max_dist-min_dist);
+                //alert("Welcome" + ranking2[j]);
+              } 
+              alert("Wellcome best distance:" + wellcome_best);
+
+              //alert("Overall minimum distance: "+ ovallmin);
+             // alert("OVerall maximum distance: "+ ovallmax);
+              Wrank = 1-(wellcome_best-ovallmin)/(ovallmax - ovallmin);
+              Prank = 1-(parknshop_best- ovallmin)/ (ovallmax-ovallmin);
+              alert("Final Score for wellcome" + Wrank);
+              alert("Final Score for parknshop" + Prank);
+
+              flag = 1;
+               for(var j = 0; j < newplaces; j ++)
+              {
+                ranking[j]= 1-(distances[j]-ovallmin)/(ovallmax-ovallmin);
+               // alert("Parknshop no." + j + "'s ranking: " + ranking[j]);
+                //alert("Parknshop"+ranking[j]);
+              } 
+              for(var j = 0; j < places; j ++)
+              {
+                ranking2[j] = 1-(distancesW[j]-ovallmin)/(ovallmax-ovallmin);
+               // alert("Wellcome no." + j + "'s ranking: " + ranking2[j]);
+              }
+          } 
+
+
+
+          
+          
+          //alert(json_data[0].dis);
+        // alert(min_dist);
+       
+        } 
+      }
+
+      function createMarker(place) {
+        var placeLoc = place.geometry.location;
+        if(flag == 0)
+        {
+          distances[places]= calcDistance(centerr, place.geometry.location);
+        places++;
+        }
+        else
+        {
+          distancesW[places]= calcDistance(centerr, place.geometry.location);
+        places++;
+        }
+        
+       ///alert(calcDistance(centerr, place.geometry.location));
+        var marker = new google.maps.Marker({
+          map: map,
+          position: place.geometry.location
+        });
+        function calcDistance(p1, p2) {
+      return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 1000).toFixed(2);
+}
+
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.setContent(place.name);
+          infowindow.open(map, this);
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=APIKEYHERE&libraries=places&callback=getLocation" async defer></script>
+   <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=APIKEYHERE&libraries=geometry"></script>
+  </body>
+</html>
